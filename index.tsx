@@ -11,37 +11,37 @@ interface SquareProps {
 
 interface BoardState {
   squares: SquareType[];
+  xIsNext: boolean;
 }
 
-class Square extends React.Component<SquareProps> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null
-    };
-  }
-
-  render() {
-    return (
-      <button className="square" onClick={() => this.props.onClick()}>
-        {this.props.value}
-      </button>
-    );
-  }
+function Square(props: SquareProps) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
 }
 
 class Board extends React.Component<any, BoardState> {
   constructor(props) {
     super(props);
     this.state = {
-      squares: Array(9).fill(null)
+      squares: Array(9).fill(null),
+      xIsNext: true
     };
+  }
+
+  playerName() {
+    return this.state.xIsNext ? "X" : "O";
   }
 
   handleClick(i) {
     const squares = this.state.squares.slice();
-    squares[i] = "X";
-    this.setState({ squares: squares });
+    squares[i] = this.playerName();
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext
+    });
   }
 
   renderSquare(i) {
@@ -54,7 +54,7 @@ class Board extends React.Component<any, BoardState> {
   }
 
   render() {
-    const status = "Next player: X";
+    const status = "Next player: " + this.playerName();
     return (
       <div>
         <div className="status">{status}</div>
