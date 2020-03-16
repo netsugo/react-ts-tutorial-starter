@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
-import * as ReactDOM from 'react-dom';
-import './style.css';
+import React, { Component } from "react";
+import * as ReactDOM from "react-dom";
+import "./style.css";
 
-class Square extends React.Component {
+interface SquareProps {
+  value: number;
+}
+
+class Square extends React.Component<SquareProps> {
   render() {
-    return (
-      <button className="square">
-        {/* TODO */}
-      </button>
-    );
+    return <button className="square">{this.props.value}</button>;
   }
 }
 
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square />;
+    return <Square value={i} />;
   }
 
   render() {
-    const status = 'Next player: X';
+    const status = "Next player: X";
     return (
       <div>
         <div className="status">{status}</div>
@@ -58,7 +58,4 @@ class Game extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <Game />,
-  document.getElementById('root')
-);
+ReactDOM.render(<Game />, document.getElementById("root"));
