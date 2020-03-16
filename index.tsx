@@ -4,6 +4,12 @@ import "./style.css";
 
 type SquareType = string | null;
 
+enum Player {
+  None = "",
+  X = "X",
+  O = "O"
+}
+
 interface SquareProps {
   value: string;
   onClick: () => void;
@@ -22,6 +28,25 @@ function Square(props: SquareProps) {
   );
 }
 
+function calculateWinner(squares: SquareType[]) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  const result = lines
+    .filter(([a, b, c]) => squares[a])
+    .filter(([a, b, c]) => squares[a] === squares[b])
+    .filter(([a, b, c]) => squares[a] === squares[c])
+    .map(([a, b, c]) => squares[a]);
+  return result.length === 0 ? null : result[0];
+}
+
 class Board extends React.Component<any, BoardState> {
   constructor(props) {
     super(props);
@@ -37,6 +62,9 @@ class Board extends React.Component<any, BoardState> {
 
   handleClick(i) {
     const squares = this.state.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
     squares[i] = this.playerName();
     this.setState({
       squares: squares,
@@ -54,7 +82,11 @@ class Board extends React.Component<any, BoardState> {
   }
 
   render() {
-    const status = "Next player: " + this.playerName();
+    const winner = calculateWinner(this.state.squares);
+    const status = winner
+      ? "Winner: " + winner
+      : "Next player: " + this.playerName();
+
     return (
       <div>
         <div className="status">{status}</div>
